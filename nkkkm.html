@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>صفحات متتالية بأنميشن</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      overflow: hidden; /* لمنع التمرير */
+    }
+
+    .page-container {
+      background-image: url('https://example.com/background1.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh; /* استخدام vh لضبط ارتفاع الصفحة */
+      width: 100vw; /* استخدام vw لضبط عرض الصفحة */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-image 0.5s ease-in-out;
+      overflow: hidden;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: transparent;
+      border-radius: 10px;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .image {
+      max-width: 100%;
+      max-height: 200px;
+      background: transparent;
+      border: 2px solid white; /* إضافة border باللون الأبيض */
+      border-radius: 30px; /* إضافة border-radius */
+    }
+
+    .text {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 20px;
+      width: 300px;
+      font-family: cursive;
+      font-weight: bold;
+      border: 3px solid white;
+      border-radius: 5px;
+      color: white;
+    }
+
+    .show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (min-width: 768px) {
+      .content {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .text {
+        margin-top: 0;
+        margin-left: 20px;    
+      }
+    }
+
+    @media (orientation: portrait) {
+      .content {
+       flex-direction: column-reverse;
+      }
+    }
+
+    @media (orientation: landscape) {
+      .content {
+        flex-direction: row;
+        width: 100%;
+        height: 100%;
+      }
+
+      .text {
+        width: 50%;
+        margin-top: 20px;
+        margin-left: 50px;
+        text-align: center;
+        font-size: 24px;
+      }
+
+      .image {
+        width: 250px;
+        max-height: none; /* إلغاء الحد الأقصى للارتفاع */
+        margin-right: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="content show">
+      <p class="text">النص في الصفحة الأولى</p>
+      <img class="image" src="https://example.com/image1.jpg" alt="Image 1">
+    </div>
+  </div>
+
+  <script>
+    const pages = [
+      {
+        text: "La mondialisation est un phénomène complexe qui se caractérise par l'intensification des échanges économiques, culturels et technologiques à l'échelle mondiale. Elle a été accélérée par les avancées technologiques et les politiques libérales des pays.",
+        image: "https://img.over-blog-kiwi.com/1/11/24/15/20161205/ob_faae91_commerce-international-mondialisation.jpg",
+        background: "https://static.vecteezy.com/system/resources/thumbnails/014/378/559/small/dark-black-and-gray-blurred-gradient-background-has-a-little-abstract-light-soft-background-for-wallpaper-design-graphic-and-presentation-backdrop-wall-free-photo.jpg"
+      },
+      {
+        text: "النص في الصفحة الثانية",
+        image: "https://example.com/image2.jpg",
+        background: "https://img.freepik.com/premium-photo/black-background-black-background-wallpaper_1084438-1593.jpg"
+      },
+      {
+        text: "النص في الصفحة الثالثة",
+        image: "https://example.com/image3.jpg",
+        background: "https://img.freepik.com/premium-photo/black-background-black-background-wallpaper_1084438-1593.jpg"
+      },
+      {
+        text: "النص في الصفحة الرابعة",
+        image: "https://example.com/image4.jpg",
+        background: "https://img.freepik.com/premium-photo/black-background-black-background-wallpaper_1084438-1593.jpg"
+      },
+      {
+        text: "النص في الصفحة الخامسة",
+        image: "https://example.com/image5.jpg",
+        background: "https://img.freepik.com/premium-photo/black-background-black-background-wallpaper_1084438-1593.jpg"
+      },
+      {
+        text: "النص في الصفحة السادسة",
+        image: "https://example.com/image6.jpg",
+        background: "https://img.freepik.com/premium-photo/black-background-black-background-wallpaper_1084438-1593.jpg"
+      },
+      {
+        text: "النص في الصفحة السابعة",
+        image: "https://example.com/image7.jpg",
+        background: "https://img.freepik.com/premium-photo/black-background-black-background-wallpaper_1084438-1593.jpg"
+      },
+      {
+        text: "النص في الصفحة الثامنة",
+        image: "https://example.com/image8.jpg",
+        background: "https://example.com/background8.jpg"
+      }
+    ];
+
+    let currentPage = 0;
+    let startX = 0;
+    let endX = 0;
+
+    const pageContainer = document.querySelector('.page-container');
+    const image = document.querySelector('.image');
+    const text = document.querySelector('.text');
+    const content = document.querySelector('.content');
+
+    document.body.addEventListener('click', nextPage);
+
+    document.body.addEventListener('touchstart', handleTouchStart, false);
+    document.body.addEventListener('touchend', handleTouchEnd, false);
+
+    function handleTouchStart(e) {
+      startX = e.changedTouches[0].screenX;
+    }
+
+    function handleTouchEnd(e) {
+      endX = e.changedTouches[0].screenX;
+      if (endX < startX) {
+        nextPage();
+      } else if (endX > startX) {
+        prevPage();
+      }
+    }
+
+    function nextPage() {
+      currentPage = (currentPage + 1) % pages.length;
+      updatePage();
+    }
+
+    function prevPage() {
+      currentPage = (currentPage - 1 + pages.length) % pages.length;
+      updatePage();
+    }
+
+    function updatePage() {
+      content.classList.remove('show');
+      
+      setTimeout(() => {
+        pageContainer.style.backgroundImage = `url('${pages[currentPage].background}')`;
+        image.src = pages[currentPage].image;
+        text.textContent = pages[currentPage].text;
+        content.classList.add('show');
+      }, 500);
+    }
+
+    updatePage();
+  </script>
+</body>
+</html>
